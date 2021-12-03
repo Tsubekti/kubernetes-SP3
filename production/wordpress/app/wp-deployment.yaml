@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-prod
+  labels:
+    app: wp-prod
+spec:
+  selector:
+    matchLabels:
+      app: wp-prod
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wp-prod
+        tier: frontend
+    spec:
+      containers:
+      - image: tsubekti/wordpress:v4
+        name: wp-prod
+        env:
+          - name: WORDPRESS_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: wp-prod-secret
+                key: WORDPRESS_DB_HOST
+          - name: WORDPRESS_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: wp-prod-secret
+                key: WORDPRESS_DB_USER
+          - name: WORDPRESS_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: wp-prod-secret
+                key: WORDPRESS_DB_PASSWORD
+          - name: WORDPRESS_DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: wp-prod-secret
+                key: WORDPRESS_DB_NAME
+        ports:
+        - containerPort: 80
+          name: wp-prod
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wp-prod-pvc

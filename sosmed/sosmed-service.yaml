@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: sosialmedia-service
+spec:
+  selector:
+    app: sosialmedia
+    tier: frontend
+  type: LoadBalancer
+  ports:
+  - name: sosialmedia
+    port:  80
+    targetPort: 80
+    protocol: TCP

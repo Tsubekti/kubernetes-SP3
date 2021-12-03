@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sosialmedia
+  labels:
+    app: sosialmedia
+spec:
+  selector:
+    matchLabels:
+      app: sosialmedia
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sosialmedia
+        tier: frontend
+    spec:
+      containers:
+      - image: tsubekti/sosmed:v10
+        name: sosialmedia
+        env:
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: sosialmedia-mysql-secret
+                key: DB_HOST
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: sosialmedia-mysql-secret
+                key: mysql_user
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: sosialmedia-mysql-secret
+                key: mysql_user_password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: sosialmedia-mysql-secret
+                key: mysql_db
+        ports:
+        - containerPort: 80
+          name: sosialmedia
+      volumes:
+      - name: sosialmedia-persistent-storage
+        persistentVolumeClaim:
+          claimName: sosmed-pvc

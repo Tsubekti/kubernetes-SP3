@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: sosmed-service
+spec:
+  selector:
+    app: sosmed
+    tier: frontend
+  type: LoadBalancer
+  ports:
+  - name: sosmed
+    port:  80
+    targetPort: 80
+    protocol: TCP

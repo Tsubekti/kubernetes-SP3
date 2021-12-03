@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: wp-prod-service
+spec:
+  selector:
+    app: wp-prod
+    tier: frontend
+  type: LoadBalancer
+  ports:
+  - name: wp-prod
+    port:  80
+    targetPort: 80
+    protocol: TCP
